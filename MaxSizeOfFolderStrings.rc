@@ -1,0 +1,31 @@
+#include "MaxSizeOfFolderStrings.h"
+
+STRINGTABLE
+BEGIN
+IDS_COPYRIGHT
+        "© П3тр0виЧъ (К.П. Дураев, Уральская Сталь, ЦВТС, 2004-2015)|@n.gololobov@uralsteel.com"
+IDS_LOG_START_PROGRAM,
+        "<><><><><><><>< START PROGRAM MaxSizeOfFolder %s ><><><><><><><>"
+IDS_LOG_STOP_PROGRAM
+        "STOP PROGRAM"
+IDS_LOG_ABOUT
+        "ABOUT"
+IDS_LOG_START_MAIN_FUNCTION
+        "START MAIN FUNCTION"
+IDS_LOG_DONE_MAIN_FUNCTION
+        "DONE MAIN FUNCTION (%s)"
+IDS_LOG_FIND_FILES
+        "FIND FILES: COUNT == %d, SIZE == %d MB (%s)"
+IDS_LOG_GOOD_FOLDER_SIZE
+        "GOOD FOLDER SIZE"
+IDS_LOG_NEED_DELETE
+        "NEED DELETE %d MB"
+IDS_LOG_SORT_FILES
+        "DONE SORT FILES (%s)"
+IDS_LOG_DELETE_OK
+        "DELETE %s, SIZE == %d MB"
+IDS_LOG_DELETE_FAIL
+        "FAIL DELETE %s, SIZE == %d MB"
+IDS_LOG_DONE_DELETE
+        "DONE DELETE: COUNT == %d, SIZE == %d MB (%s)"
+END
