@@ -21,11 +21,19 @@ object Main: TMain
   object PopupMenu: TPopupMenu
     Left = 128
     Top = 72
+    object miStartCheck: TMenuItem
+      Caption = #1047#1072#1087#1091#1089#1082' '#1086#1095#1080#1089#1090#1082#1080
+      Default = True
+      OnClick = miStartCheckClick
+    end
+    object miSeparator01: TMenuItem
+      Caption = '-'
+    end
     object miAbout: TMenuItem
       Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077'...'
       OnClick = miAboutClick
     end
-    object miSeparator01: TMenuItem
+    object miSeparator02: TMenuItem
       Caption = '-'
     end
     object miClose: TMenuItem
@@ -36,8 +44,9 @@ object Main: TMain
   object TrayIcon: TTrayIcon
     PopupMenu = PopupMenu
     OnClick = TrayIconClick
-    Left = 240
-    Top = 80
+    OnDblClick = miStartCheckClick
+    Left = 200
+    Top = 112
   end
   object Timer: TTimer
     Enabled = False

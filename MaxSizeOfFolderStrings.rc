@@ -3,7 +3,7 @@
 STRINGTABLE
 BEGIN
 IDS_COPYRIGHT
-        "© П3тр0виЧъ (К.П. Дураев, Уральская Сталь, ЦВТС, 2004-2015)|@n.gololobov@uralsteel.com"
+        "© Константин Дураев (Уральская Сталь, ЦВТС)|@P3tr0viCh@mail.ru"
 IDS_LOG_START_PROGRAM,
         "<><><><><><><>< START PROGRAM MaxSizeOfFolder %s ><><><><><><><>"
 IDS_LOG_STOP_PROGRAM

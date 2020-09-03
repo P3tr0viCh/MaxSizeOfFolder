@@ -18,7 +18,7 @@
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 
-TMain *Main;
+TMain * Main;
 
 const MB = 1048576;
 
@@ -34,9 +34,12 @@ void __fastcall TMain::miCloseClick(TObject *Sender) {
 // ---------------------------------------------------------------------------
 void __fastcall TMain::miAboutClick(TObject *Sender) {
 	miAbout->Enabled = false;
+
 	WriteToLog(IDS_LOG_ABOUT);
-	ShowAbout(16, MAXBYTE, 3, NULL, NULL, NULL, NULL, NULL,
+
+	ShowAbout(14, MAXBYTE, MAXBYTE, MAXBYTE, NULL, NULL, NULL, NULL, NULL,
 		LoadStr(IDS_COPYRIGHT));
+
 	miAbout->Enabled = true;
 }
 
@@ -62,19 +65,26 @@ void __fastcall TMain::TrayIconClick(TObject *Sender) {
 void __fastcall TMain::FormDestroy(TObject *Sender) {
 	WriteToLog(IDS_LOG_STOP_PROGRAM);
 }
-// ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
 void __fastcall TMain::TimerTimer(TObject *Sender) {
 	MainFunction();
 }
 
+// ---------------------------------------------------------------------------
+void __fastcall TMain::miStartCheckClick(TObject *Sender) {
+	MainFunction();
+}
+
+// ---------------------------------------------------------------------------
 class TFileSizeAndDate : public TObject {
 public:
 	__int64 Size;
 	TDateTime DateTime;
 };
 
-__int64 FindFiles(String StartFolder, TStringList *Files) {
+// ---------------------------------------------------------------------------
+__int64 FindFiles(String StartFolder, TStringList * Files) {
 	TSearchRec SearchRec;
 	__int64 Result = 0;
 
@@ -83,12 +93,13 @@ __int64 FindFiles(String StartFolder, TStringList *Files) {
 	if (FindFirst(StartFolder + "*.*", faAnyFile, SearchRec) == 0) {
 		do {
 			if (SearchRec.Name != "." & SearchRec.Name != "..") {
-				if (IsValueInWord(SearchRec.Attr, faDirectory))
+				if (IsValueInWord(SearchRec.Attr, faDirectory)) {
 					Result += FindFiles(StartFolder + SearchRec.Name, Files);
+				}
 				else {
-					TFileSizeAndDate* FileSizeAndDate = new TFileSizeAndDate();
-					FileSizeAndDate->Size             = SearchRec.Size;
-					FileSizeAndDate->DateTime         = SearchRec.TimeStamp;
+					TFileSizeAndDate * FileSizeAndDate = new TFileSizeAndDate();
+					FileSizeAndDate->Size = SearchRec.Size;
+					FileSizeAndDate->DateTime = SearchRec.TimeStamp;
 
 					Files->AddObject(StartFolder + SearchRec.Name,
 						FileSizeAndDate);
@@ -105,31 +116,35 @@ __int64 FindFiles(String StartFolder, TStringList *Files) {
 	return Result;
 }
 
-int __fastcall SortByDateTime(TStringList* List, int Index1, int Index2) {
+// ---------------------------------------------------------------------------
+int __fastcall SortByDateTime(TStringList * List, int Index1, int Index2) {
 	return CompareDateTime(((TFileSizeAndDate*) List->Objects[Index1])
 		->DateTime, ((TFileSizeAndDate*) List->Objects[Index2])->DateTime);
 }
 
+// ---------------------------------------------------------------------------
 void TMain::MainFunction() {
 	DWORD FirstTickMain = StartTimer();
 
 	WriteToLog(IDS_LOG_START_MAIN_FUNCTION);
 
-	TFileIni* FileIni = CreateINIFile();
+	TFileIni * FileIni = TFileIni::GetNewInstance();
 
-	String Folder         = FileIni->ReadString("Options", "Folder", "");
+	String Folder = FileIni->ReadString("Options", "Folder", "");
 	__int64 MaxFolderSize = FileIni->ReadInteger("Options", "MaxSize", 0);
-	MaxFolderSize         = MaxFolderSize * MB;
+	MaxFolderSize = MaxFolderSize * MB;
 
 	FileIni->Free();
 
 	if (Folder != "" & MaxFolderSize > 0) {
 
-		TStringList *Files = new TStringList();
+		TStringList * Files = new TStringList();
 
 		DWORD FirstTick = StartTimer();
 
+		// ------------------------------------------------
 		__int64 FolderSize = FindFiles(Folder, Files);
+		// ------------------------------------------------
 
 		WriteToLog(Format(IDS_LOG_FIND_FILES,
 			ARRAYOFCONST((Files->Count, FolderSize / MB,
@@ -150,7 +165,7 @@ void TMain::MainFunction() {
 			__int64 DeletedFilesSize = 0;
 			__int64 FileSize;
 			int DeletedCount = 0;
-			String FileName  = "";
+			String FileName = "";
 
 			FirstTick = StartTimer();
 
@@ -170,19 +185,22 @@ void TMain::MainFunction() {
 						ARRAYOFCONST((FileName, FileSize / MB))));
 				}
 
-				if (DeletedFilesSize >= NeedDelete)
+				if (DeletedFilesSize >= NeedDelete) {
 					break;
+				}
 			}
 
 			WriteToLog(Format(IDS_LOG_DONE_DELETE,
 				ARRAYOFCONST((DeletedCount, DeletedFilesSize / MB,
 				StopTimer(FirstTick)))));
 		}
-		else
+		else {
 			WriteToLog(IDS_LOG_GOOD_FOLDER_SIZE);
+		}
 
 		Files->Free();
 	}
 
 	WriteToLog(Format(IDS_LOG_DONE_MAIN_FUNCTION, StopTimer(FirstTickMain)));
 }
+// ---------------------------------------------------------------------------
